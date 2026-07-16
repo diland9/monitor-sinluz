@@ -167,6 +167,26 @@ function buscaCampo(row,candidatos){
   }
   return undefined;
 }
+const CAMPOS_FECHA=["fecha","fecha_hora","fecha revision","fecha_revision","captura","fecha captura","timestamp","hora","hora_captura","ultima_captura"];
+// La hoja "comuna" es un historico: cada corrida del script agrega filas nuevas
+// para las mismas comunas. Aqui nos quedamos solo con el registro mas reciente
+// de cada comuna (por fecha si existe la columna, o por orden de aparicion).
+function ultimaCapturaPorComuna(filas){
+  const vistos=new Map();
+  filas.forEach((r,idx)=>{
+    const nombre=String(buscaCampo(r,["comuna"])||"").trim();
+    if(!nombre) return;
+    const clave=nombre.toLowerCase();
+    const fecha=buscaCampo(r,CAMPOS_FECHA);
+    const anterior=vistos.get(clave);
+    let gana;
+    if(!anterior) gana=true;
+    else if(fecha!==undefined && anterior.fecha!==undefined) gana=String(fecha)>=String(anterior.fecha);
+    else gana=idx>=anterior.idx; // sin fecha: asumimos orden cronologico de aparicion
+    if(gana) vistos.set(clave,{fila:r,idx,fecha});
+  });
+  return [...vistos.values()].map(v=>v.fila);
+}
 async function csv(url){
   const res=await fetch(url,{cache:"no-store"});
   if(!res.ok) throw new Error("No se pudo leer: "+url);
@@ -187,7 +207,8 @@ async function construyeData(){
   });
 
   let sinCoord=0;
-  const comunas=filasComuna.map(r=>{
+  const filasComunaUltima=ultimaCapturaPorComuna(filasComuna);
+  const comunas=filasComunaUltima.map(r=>{
     const nombre=String(buscaCampo(r,["comuna"])||"").trim();
     const latHoja=buscaCampo(r,["lat","latitud","latitude"]);
     const lonHoja=buscaCampo(r,["lon","lng","longitud","longitude"]);
@@ -205,9 +226,9 @@ async function construyeData(){
   if(sinCoord>0) console.warn(sinCoord+" comuna(s) sin coordenadas (agrega columnas lat/lon en la hoja 'comuna' o suma su coordenada a COORDS_COMUNA).");
 
   const serie=filasSerie.map(r=>({
-    t:String(buscaCampo(r,["t","fecha","timestamp"])||"").trim(),
+    t:String(buscaCampo(r,["t","fecha","fecha_hora","timestamp"])||"").trim(),
     v:limpiaNum(buscaCampo(r,["v","valor","afectados"]))
-  })).filter(s=>s.t);
+  })).filter(s=>s.t).sort((a,b)=>a.t<b.t?-1:a.t>b.t?1:0);
 
   return {
     ultima_captura:String(resumen["ultima captura"]||"").trim(),
