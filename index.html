@@ -73,9 +73,69 @@
     /* En movil la card de KPI grande vive dentro del handle (mismo nodo, no duplicado) */
     #sheetHandle{padding-left:1rem;padding-right:1rem;padding-bottom:.5rem}
   }
+  /* ---------- Pantalla de bienvenida ---------- */
+  #bienvenida{
+    position:fixed;inset:0;z-index:3000;
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;
+    background:rgba(2,6,23,.72);backdrop-filter:blur(6px);
+    transition:opacity .4s ease;
+  }
+  #bienvenida.oculto{opacity:0;pointer-events:none}
+  .bw-card{
+    position:relative;width:100%;max-width:440px;
+    background:rgba(15,23,42,.92);
+    border:1px solid #06b6d4;border-radius:18px;
+    box-shadow:0 0 24px rgba(6,182,212,.45);
+    padding:26px 24px 22px;
+    animation:bwIn .45s cubic-bezier(.2,.8,.2,1);
+  }
+  @keyframes bwIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+  .bw-close{
+    position:absolute;top:12px;right:12px;
+    width:30px;height:30px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(148,163,184,.12);color:#94a3b8;
+    border:1px solid #334155;cursor:pointer;font-size:16px;line-height:1;
+    transition:background .15s,color .15s;
+  }
+  .bw-close:hover{background:rgba(239,68,68,.18);color:#fca5a5;border-color:#ef4444}
+  /* barra de progreso del autocierre */
+  .bw-barra{height:3px;border-radius:2px;background:#1e293b;overflow:hidden;margin-top:18px}
+  .bw-barra > i{display:block;height:100%;width:100%;background:#22d3ee;transform-origin:left;animation:bwProg 5s linear forwards}
+  @keyframes bwProg{from{transform:scaleX(1)}to{transform:scaleX(0)}}
 </style>
 </head>
 <body class="bg-slate-950 text-slate-100 overflow-hidden">
+<div id="bienvenida">
+  <div class="bw-card">
+    <button class="bw-close" onclick="cerrarBienvenida()" title="Cerrar" aria-label="Cerrar">&times;</button>
+    <h2 class="text-cyan-300 text-xl font-semibold leading-snug pr-6">Bienvenido al Monitor de Clientes sin Luz</h2>
+
+    <div class="mt-4 flex items-center gap-3">
+      <div class="flex-1">
+        <p class="text-slate-400 text-xs">Autor</p>
+        <p class="text-slate-100 text-sm font-medium">Diland Castro <span class="text-slate-400 font-normal">(@aprendecondiland)</span></p>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="https://www.instagram.com/aprendecondiland/" target="_blank" rel="noopener noreferrer" class="social-btn btn-ig" title="Instagram" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 01-1.38-.9 3.7 3.7 0 01-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.9.04-1.39.19-1.71.32-.43.17-.74.37-1.06.69-.32.32-.52.63-.69 1.06-.13.32-.28.81-.32 1.71-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.04.9.19 1.39.32 1.71.17.43.37.74.69 1.06.32.32.63.52 1.06.69.32.13.81.28 1.71.32 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.9-.04 1.39-.19 1.71-.32.43-.17.74-.37 1.06-.69.32-.32.52-.63.69-1.06.13-.32.28-.81.32-1.71.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.04-.9-.19-1.39-.32-1.71a2.85 2.85 0 00-.69-1.06 2.85 2.85 0 00-1.06-.69c-.32-.13-.81-.28-1.71-.32-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 110 11.9 5.95 5.95 0 010-11.9zm0 9.81a3.86 3.86 0 100-7.72 3.86 3.86 0 000 7.72zm7.58-10.05a1.39 1.39 0 11-2.78 0 1.39 1.39 0 012.78 0z"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/@aprendecondiland" target="_blank" rel="noopener noreferrer" class="social-btn btn-tt" title="TikTok" aria-label="TikTok">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64c.3 0 .59.04.87.12V9.4a6.34 6.34 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1.04-.1z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-4 border-t border-slate-800 pt-3 text-sm space-y-1.5">
+      <p><span class="text-slate-400">Fuente de datos:</span> <span class="text-slate-200">Superintendencia de Electricidad y Combustibles.</span></p>
+      <p><span class="text-slate-400">Actualización:</span> <span class="text-slate-200">cada 1 hora.</span></p>
+    </div>
+
+    <p class="text-slate-500 text-[11px] mt-4">Cargando visualizador... esta ventana se cerrara automaticamente.</p>
+    <div class="bw-barra"><i></i></div>
+  </div>
+</div>
 <div id="estado" class="fixed inset-0 z-[2000] bg-slate-950 flex items-center justify-center text-cyan-300 text-sm text-center px-6 leading-relaxed">Cargando datos desde Google Sheets...</div>
 <div class="flex h-screen w-full app-shell">
 
@@ -104,6 +164,13 @@
             <span id="ts" class="text-red-300 font-medium"></span>
           </div>
         </div>
+        <div class="flex items-center gap-2 mt-2 bg-slate-950/40 border border-slate-700 rounded-lg px-2 py-1.5">
+          <span class="text-slate-400 text-xs">Fuente:</span>
+          <img src="https://apps.sec.cl/INTONLINEv1/img/logo-sec-grafico-interrupciones-V1.jpg"
+               alt="Logo SEC"
+               class="h-6 w-auto rounded bg-white/95 px-1 py-0.5"
+               onerror="this.onerror=null;this.replaceWith(Object.assign(document.createElement('span'),{className:'text-slate-300 text-xs font-semibold',textContent:'SEC'}))">
+        </div>
       </div>
 
       <div class="kpi-mini bg-slate-950/70 border border-cyan-700 rounded-xl p-3 mt-2">
@@ -121,6 +188,11 @@
         <select id="fReg" class="bg-slate-950/60 border border-slate-600 rounded-md px-2 py-1.5 text-sm text-slate-200"></select>
         <label class="text-slate-400 text-xs mt-1">Filtrar por comuna</label>
         <select id="fCom" class="bg-slate-950/60 border border-slate-600 rounded-md px-2 py-1.5 text-sm text-slate-200"></select>
+      </div>
+
+      <div class="border-t border-slate-800 pt-2 flex flex-col">
+        <p class="text-cyan-300 text-xs font-medium mb-2">10 regiones mas afectadas</p>
+        <div id="topReg" class="flex flex-col gap-1.5 text-xs"></div>
       </div>
 
       <div class="border-t border-slate-800 pt-2 flex-1 min-h-0 flex flex-col">
@@ -169,8 +241,19 @@ const SHEET_URLS = {
 // para no depender de que la hoja "comuna" traiga lat/lon).
 const COORDS_COMUNA = {"Villarrica":[-39.3011,-72.1836],"Temuco":[-38.6732,-72.6677],"Pucon":[-39.271,-71.7924],"San Pedro de la Paz":[-36.8812,-73.0979],"Padre Las Casas":[-38.8022,-72.5553],"Talcahuano":[-36.7156,-73.0992],"Talca":[-35.4279,-71.6021],"Coronel":[-37.0072,-73.1262],"Panguipulli":[-39.7148,-72.0291],"Cunco":[-38.9772,-71.9921],"Concepcion":[-36.8343,-72.9509],"Mariquina":[-39.5104,-73.0168],"Viña del Mar":[-33.0278,-71.5152],"Arauco":[-37.2885,-73.3999],"Nueva Imperial":[-38.7515,-72.9719],"Yerbas Buenas":[-35.6898,-71.5441],"Lota":[-37.1196,-73.1049],"Lanco":[-39.5122,-72.6213],"Villa Alemana":[-33.0676,-71.3302],"Hualpen":[-36.7889,-73.1411],"Futrono":[-40.1186,-72.1155],"Vilcun":[-38.7047,-72.1165],"Loncoche":[-39.3562,-72.5828],"Constitucion":[-35.3632,-72.2762],"Algarrobo":[-33.3295,-71.5988],"Colbun":[-36.0772,-70.9787],"Lampa":[-33.2781,-70.875],"Teodoro Schmidt":[-39.0056,-73.1275],"Navidad":[-34.0126,-71.8204],"Valparaiso":[-33.1296,-71.5733],"Pichilemu":[-34.3838,-71.9107],"San Felipe":[-32.7363,-70.753],"Yungay":[-37.1045,-71.9306],"Lonquimay":[-38.4745,-71.2391],"Tome":[-36.6168,-72.8582],"Curacautin":[-38.4272,-71.772],"Coelemu":[-36.5051,-72.7504],"Chillan":[-36.6174,-72.1284],"Freire":[-38.955,-72.5885],"San Javier":[-35.629,-71.9273],"Curepto":[-35.1298,-71.9531],"Los Lagos":[-39.8784,-72.5545],"Tolten":[-39.2171,-73.0658],"Pitrufquen":[-39.0839,-72.6634],"Pinto":[-36.9213,-71.4997],"Mafil":[-39.692,-72.8636],"Los Angeles":[-37.4076,-72.3275],"San Carlos":[-36.3857,-72.0188],"Melipeuco":[-38.8247,-71.6108],"Paillaco":[-40.0743,-72.8433],"Victoria":[-38.2806,-72.2336],"Lebu":[-37.6775,-73.5906],"Sagrada Familia":[-35.1039,-71.4959],"Cañete":[-37.8738,-73.3175],"Collipulli":[-38.0263,-72.1242],"Lautaro":[-38.5432,-72.289],"Quilpue":[-33.1472,-71.2543],"Quilleco":[-37.4367,-71.8613],"Bulnes":[-36.7905,-72.2901],"Melipilla":[-33.744,-71.195],"Las Cabras":[-34.1648,-71.3326],"Penco":[-36.7478,-72.9436],"Los Alamos":[-37.6736,-73.357],"Putaendo":[-32.4813,-70.5216],"Alhue":[-34.0428,-71.0566],"Treguaco":[-36.428,-72.6595],"Los Andes":[-32.951,-70.2433],"Santa Juana":[-37.2767,-72.9601],"Molina":[-35.3527,-70.9101],"Pelarco":[-35.3831,-71.3501],"Longavi":[-36.1106,-71.4414],"Valdivia":[-39.8185,-73.1695],"Rauco":[-34.9382,-71.4261],"Ercilla":[-38.0828,-72.353],"Galvarino":[-38.4482,-72.7916],"Empedrado":[-35.6136,-72.2842],"Tucapel":[-37.2254,-71.7444],"Santa Barbara":[-37.6214,-71.7492],"Salamanca":[-31.8935,-70.6613],"El Carmen":[-36.925,-71.8471],"Linares":[-35.9583,-71.3322],"Quillota":[-32.9047,-71.2727],"Gorbea":[-39.1719,-72.6695],"Colina":[-33.135,-70.616],"Casablanca":[-33.3158,-71.4348],"Parral":[-36.2619,-71.6457],"Calle Larga":[-32.9508,-70.5447],"Santa Maria":[-32.686,-70.6097],"Cholchol":[-38.5832,-72.9023],"San Esteban":[-32.6867,-70.3483],"El Quisco":[-33.4152,-71.6514],"Cartagena":[-33.5338,-71.4422],"Carahue":[-38.6113,-73.2694],"Traiguen":[-38.247,-72.6551],"Saavedra":[-38.8326,-73.2953],"Quirihue":[-36.2356,-72.5437],"Florida":[-36.8224,-72.7178],"San Antonio":[-33.6648,-71.4891],"Ñiquén":[-36.3021,-71.8977],"Renaico":[-37.7176,-72.5756],"Portezuelo":[-36.5463,-72.4667],"Nacimiento":[-37.4855,-72.8235],"Hualañé":[-34.9526,-71.7088],"Lolol":[-34.7681,-71.6487],"Coihueco":[-36.7019,-71.5813],"Isla de Maipo":[-33.7487,-70.946],"San Ignacio":[-36.8223,-72.0295],"Angol":[-37.7687,-72.7955],"Curanilahue":[-37.4829,-73.2356],"Palena":[-43.6831,-71.9836],"Mulchen":[-37.8384,-72.097],"El Tabo":[-33.4829,-71.5804],"Lumaco":[-38.2872,-73.0459],"La Ligua":[-32.3538,-71.271],"Los Sauces":[-37.9829,-72.7968],"Rinconada":[-32.8763,-70.7062],"Pemuco":[-36.9829,-72.0676],"Cerro Navia":[-33.4223,-70.7443],"Chillan Viejo":[-36.6801,-72.1989],"Chanco":[-35.6989,-72.4853],"Lago Ranco":[-40.3726,-72.1657],"Puchuncavi":[-32.7453,-71.3875],"Litueche":[-34.1059,-71.7312],"Cauquenes":[-35.9712,-72.2807],"Osorno":[-40.6118,-73.0866],"Lo Prado":[-33.4467,-70.7226],"Coltauco":[-34.2595,-71.0775],"Quintero":[-32.8429,-71.4727],"Negrete":[-37.608,-72.5764],"Perquenco":[-38.4283,-72.4365],"Cobquecura":[-36.181,-72.7205],"Nogales":[-32.6915,-71.1761],"La Serena":[-29.7892,-71.0606],"Rio Claro":[-35.2603,-71.2697],"Pichidegua":[-34.3712,-71.339],"Doñihue":[-34.1966,-70.9237],"Santo Domingo":[-33.8097,-71.6763],"Castro":[-42.4738,-73.8046],"Corral":[-39.9892,-73.3717],"Laja":[-37.3126,-72.5824],"Quilicura":[-33.3557,-70.7353],"Pencahue":[-35.3276,-71.8163],"Coquimbo":[-30.2285,-71.3585],"San Pablo":[-40.4273,-73.1614],"Curacavi":[-33.3665,-71.08],"Puren":[-38.0121,-73.0504],"Antuco":[-37.3277,-71.3669],"Quillón":[-36.8185,-72.5019],"Concon":[-32.9525,-71.4669],"Retiro":[-36.0021,-71.8296],"Lago Verde":[-44.4924,-71.8339],"Combarbala":[-31.1466,-70.9655],"Catemu":[-32.7074,-70.9447],"Ancud":[-42.0174,-73.7991],"Puerto Montt":[-41.4885,-72.7951],"Yumbel":[-37.0886,-72.6159],"La Union":[-40.202,-73.2201],"San Nicolas":[-36.4795,-72.2284],"Pudahuel":[-33.4239,-70.8546],"Olmue":[-33.0356,-71.1104],"San Clemente":[-35.712,-70.8484],"Ñuñoa":[-33.4579,-70.5987],"Panquehue":[-32.7937,-70.8285],"Iquique":[-20.9233,-70.0481],"La Florida":[-33.5283,-70.5399],"Llaillay":[-32.8881,-70.9018],"Pelluhue":[-35.9115,-72.6076],"Ninhue":[-36.3567,-72.4097],"Canela":[-31.4018,-71.3942],"El Monte":[-33.6679,-71.0337],"Chonchi":[-42.6819,-73.9306],"Petorca":[-32.1905,-70.8701],"Vichuquen":[-34.8415,-72.0227],"Maria Pinto":[-33.498,-71.2104],"Chiguayante":[-36.9007,-73.0051],"Andacollo":[-30.2594,-71.1006],"Requinoa":[-34.3349,-70.6591],"Dalcahue":[-42.3097,-73.836],"Quemchi":[-42.1789,-73.4113],"Maule":[-35.509,-71.711],"Rancagua":[-34.1259,-70.8165],"Nancagua":[-34.6675,-71.1918],"Renca":[-33.4017,-70.7276],"Curarrehue":[-39.3367,-71.5395],"Las Condes":[-33.4212,-70.5009],"Purranque":[-40.9355,-73.457],"Chepica":[-34.792,-71.3599],"San Rafael":[-35.3025,-71.5009],"Padre Hurtado":[-33.5576,-70.871],"Cabildo":[-32.4173,-70.8237],"La Higuera":[-29.3755,-70.9019],"Conchali":[-33.3835,-70.6766],"Villa Alegre":[-35.6858,-71.6835],"San Vicente":[-34.4775,-71.1232],"Tiltil":[-33.0627,-70.8762],"Puyehue":[-40.7256,-72.3835],"Curico":[-35.199,-70.8956],"Palmilla":[-34.5283,-71.3532],"Coinco":[-34.2824,-70.9713],"Hualqui":[-37.0449,-72.8709],"San Fernando":[-34.7436,-70.603],"Fresia":[-41.1542,-73.6049],"Rengo":[-34.4547,-70.7187],"Calbuco":[-41.7229,-73.1954],"Placilla":[-34.6189,-71.0863],"Ranquil":[-36.6404,-72.588],"Puerto Varas":[-41.1899,-72.386],"Santiago":[-33.4534,-70.6567],"Monte Patria":[-30.8347,-70.6503],"Quilaco":[-37.9608,-71.7051],"Quinta de Tilcoco":[-34.3593,-70.998],"San Rosendo":[-37.2132,-72.7212],"Recoleta":[-33.4055,-70.6395],"Coyhaique":[-45.5547,-71.9921],"Paine":[-33.8634,-70.7583],"Llanquihue":[-41.2375,-73.133],"Vitacura":[-33.3793,-70.5727],"Limache":[-33.0312,-71.2782],"Providencia":[-33.4317,-70.612],"Quinta Normal":[-33.4276,-70.7008],"La Reina":[-33.447,-70.5368],"Peñalolen":[-33.4853,-70.5251],"Rio Bueno":[-40.4962,-72.5346],"Los Vilos":[-31.9779,-71.3039],"Zapallar":[-32.5874,-71.3359],"Rio Negro":[-40.7703,-73.4166],"Puqueldon":[-42.6269,-73.6369],"Alto Biobio":[-37.8653,-71.3487],"Queilen":[-42.8557,-73.5646],"Cabrero":[-37.0619,-72.3812],"Tirua":[-38.2973,-73.3944],"Santa Cruz":[-34.6429,-71.4019],"Talagante":[-33.6821,-70.8956],"Huechuraba":[-33.3604,-70.638],"Maipu":[-33.507,-70.8097],"Macul":[-33.4895,-70.6001],"San Fabian":[-36.5797,-71.2874],"La Pintana":[-33.5873,-70.6372],"Puente Alto":[-33.5911,-70.5576],"Alto Hospicio":[-20.1896,-70.0107],"Buin":[-33.7476,-70.7393],"San Pedro":[-33.9313,-71.452],"Malloa":[-34.4764,-70.873],"Ovalle":[-30.6733,-71.4053],"Lo Barnechea":[-33.2994,-70.3687],"Pozo Almonte":[-20.773,-69.5072],"Mostazal":[-33.9557,-70.5687],"Chimbarongo":[-34.7518,-70.9807],"San Juan de la Costa":[-40.5068,-73.5605],"Alto del Carmen":[-28.9908,-70.1565],"Estacion Central":[-33.4645,-70.7009],"Independencia":[-33.4144,-70.6651],"Illapel":[-31.5493,-70.9704],"Licanten":[-34.9742,-72.0605],"Pedro Aguirre Cerda":[-33.4919,-70.6756],"Contulmo":[-38.0526,-73.2119],"Maullin":[-41.6362,-73.5021],"La Cisterna":[-33.5299,-70.6639],"La Granja":[-33.5354,-70.6223],"Lo Espejo":[-33.5205,-70.6901],"Antofagasta":[-24.2782,-69.4052],"Aysén":[-45.9886,-73.7742],"Teno":[-34.8881,-71.0219],"Peñaflor":[-33.6111,-70.8937],"Cisnes":[-44.4569,-73.1358],"San Bernardo":[-33.6291,-70.7239],"San Ramon":[-33.5405,-70.6419],"Codegua":[-34.0571,-70.5474],"La Estrella":[-34.2232,-71.6026],"Arica":[-18.5323,-69.9727],"Paredones":[-34.6734,-71.9115],"Calama":[-22.1682,-68.6291],"Hijuelas":[-32.8694,-71.0811],"Chaiten":[-43.0951,-72.5759],"Copiapo":[-27.317,-69.8219],"Papudo":[-32.4748,-71.3799],"Cochamo":[-41.7603,-72.0913],"Curaco de Velez":[-42.426,-73.5788],"Punta Arenas":[-53.6454,-72.019],"Quinchao":[-42.5214,-73.3585],"Puerto Octay":[-40.933,-72.5987],"Futaleufu":[-43.1804,-72.007],"Cerrillos":[-33.4997,-70.7125],"Romeral":[-35.0682,-70.7115],"Vicuña":[-29.892,-70.3822],"La Cruz":[-32.8251,-71.2401],"El Bosque":[-33.5627,-70.6761],"Pirque":[-33.7185,-70.5067],"San Miguel":[-33.4987,-70.6514],"Graneros":[-34.0656,-70.7471],"Machali":[-34.3207,-70.3191],"Pumanque":[-34.5959,-71.6918],"San Joaquin":[-33.4958,-70.6284]};
 
-const REFRESCO_MIN = 5; // minutos entre auto-actualizaciones de datos
+const REFRESCO_MIN = 5; // minutos entre auto-actualizaciones de datos (la SEC publica ~cada 1 hora)
 let DATA = null;
+
+// Pantalla de bienvenida: se puede cerrar con la X o se autocierra a los 15s.
+// El visualizador carga por detras mientras tanto (no la bloquea).
+let bwTimer = setTimeout(cerrarBienvenida, 5000);
+function cerrarBienvenida(){
+  const el=document.getElementById("bienvenida");
+  if(!el || el.classList.contains("oculto")) return;
+  clearTimeout(bwTimer);
+  el.classList.add("oculto");
+  setTimeout(()=>{ if(el && el.parentNode) el.parentNode.removeChild(el); }, 450);
+}
 
 // Bottom sheet movil: solo agrega/quita una clase, todo el efecto visual
 // (transform + opacity) vive en el CSS de la media query <768px.
@@ -226,11 +309,36 @@ async function construyeData(){
     csv(SHEET_URLS.resumen), csv(SHEET_URLS.comuna), csv(SHEET_URLS.serie)
   ]);
 
+  // La hoja "resumen" trae, en las mismas columnas metrica/valor:
+  //  1) metricas nacionales (Ultima captura, Afectados AHORA, etc.)
+  //  2) un bloque "POR REGION (AHORA)" con region -> afectados
+  //  3) un bloque "TOP 10 COMUNAS..." (que aqui ignoramos, el mapa usa la hoja comuna)
+  // Recorremos en orden y activamos/desactivamos la captura del bloque regional
+  // segun los marcadores de seccion.
   const resumen={};
+  const regiones=[];
+  let enRegion=false;
   filasResumen.forEach(r=>{
-    const met=buscaCampo(r,["metrica"]); const val=buscaCampo(r,["valor"]);
-    if(met!==undefined) resumen[String(met).trim().toLowerCase()]=val;
+    const met=buscaCampo(r,["metrica"]);
+    const val=buscaCampo(r,["valor"]);
+    const etq=String(met!==undefined?met:"").trim();
+    const etqLow=etq.toLowerCase();
+
+    if(etqLow.startsWith("por region")){ enRegion=true; return; }      // inicio bloque regional
+    if(etqLow.startsWith("top 10")||etqLow.startsWith("top10")){ enRegion=false; return; } // fin bloque
+    if(etqLow==="region"||etqLow==="comuna") return;                    // encabezados internos
+
+    if(enRegion){
+      // Dentro del bloque: solo filas con region + valor numerico
+      if(etq!=="" && val!==undefined && val!=="" && !isNaN(limpiaNum(val))){
+        regiones.push({region:etq, afectados:limpiaNum(val)});
+      }
+      return;
+    }
+    // Fuera del bloque: metricas nacionales normales
+    if(met!==undefined) resumen[etqLow]=val;
   });
+  regiones.sort((a,b)=>b.afectados-a.afectados);
 
   let sinCoord=0;
   const filasComunaUltima=ultimaCapturaPorComuna(filasComuna);
@@ -262,6 +370,7 @@ async function construyeData(){
     pct:limpiaNum(resumen["% sin suministro ahora"]),
     n_comunas:comunas.length,
     comunas,
+    regiones,
     serie
   };
 }
@@ -278,7 +387,7 @@ async function cargarYArrancar(primeraVez){
   }
 }
 function refrescaVista(){
-  panel();top10();
+  panel();topReg();top10();
   const reg=document.getElementById("fReg").value||"__all__";
   const com=document.getElementById("fCom").value||"__all__";
   mapa(reg,com);
@@ -295,6 +404,27 @@ function panel(){
   document.getElementById("ts").textContent = DATA.ultima_captura.replace(" "," - ")+" hrs";
   document.getElementById("total").textContent = miles(DATA.total_afectados);
   document.getElementById("pct").textContent = Number(DATA.pct).toFixed(2)+"% del pais";
+}
+function topReg(){
+  const rs=(DATA.regiones||[]).slice().sort((a,b)=>b.afectados-a.afectados);
+  const cont=document.getElementById("topReg");
+  if(!rs.length){cont.innerHTML=`<span class="text-slate-500">Sin datos regionales</span>`;return;}
+  const maxV=rs[0].afectados||1;
+  cont.innerHTML=rs.slice(0,10).map((r,i)=>{
+    const col=colorRango((i+1)/rs.length);
+    const w=Math.max(4,Math.round(r.afectados/maxV*100));
+    return `<div class="flex items-center gap-1.5">
+      <span class="text-slate-500 w-3 text-right">${i+1}</span>
+      <span class="inline-block rounded-full" style="width:8px;height:8px;background:${col}"></span>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-1">
+          <span class="text-slate-200 flex-1 truncate">${r.region}</span>
+          <span class="text-slate-400">${miles(r.afectados)}</span>
+        </div>
+        <div class="h-1 rounded-full bg-slate-800 mt-0.5"><div class="h-1 rounded-full" style="width:${w}%;background:${col}"></div></div>
+      </div>
+    </div>`;
+  }).join("");
 }
 function top10(){
   const cs=DATA.comunas.slice().sort((a,b)=>b.afectados-a.afectados);const n=cs.length;
@@ -348,7 +478,7 @@ function filtros(){
 function main(){
   MAP=L.map("map",{zoomControl:true,attributionControl:false}).setView([-38,-71],5);
   L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",{maxZoom:19}).addTo(MAP);
-  panel();top10();filtros();mapa("__all__","__all__");evo(0);
+  panel();topReg();top10();filtros();mapa("__all__","__all__");evo(0);
   document.querySelectorAll(".rb").forEach(b=>b.onclick=()=>{
     document.querySelectorAll(".rb").forEach(x=>{x.classList.remove("bg-cyan-500","text-slate-900","border-cyan-400");x.classList.add("border-slate-600","text-cyan-300");});
     b.classList.add("bg-cyan-500","text-slate-900","border-cyan-400");b.classList.remove("border-slate-600","text-cyan-300");
