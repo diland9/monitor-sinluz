@@ -278,6 +278,30 @@ function buscaCampo(row,candidatos){
   }
   return undefined;
 }
+// Parser de fecha ROBUSTO. Google Sheets publica horas SIN cero a la izquierda
+// ("2026-07-10 0:00:00"), formato que Date.parse rechaza en muchos navegadores
+// (devuelve NaN y la fila se perderia). Aqui extraemos los numeros a mano y
+// construimos la fecha en horario LOCAL, sin depender del motor del navegador.
+function parseFecha(str){
+  if(!str) return null;
+  const s=String(str).trim();
+  // admite "YYYY-MM-DD HH:MM(:SS)" o con "T", con horas de 1 o 2 digitos
+  const m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})[ T](\d{1,2}):(\d{1,2})(?::(\d{1,2}))?/);
+  if(m){
+    const [_,Y,Mo,D,H,Mi,Se]=m;
+    const d=new Date(+Y,+Mo-1,+D,+H,+Mi,+(Se||0));
+    return isNaN(d.getTime())?null:d.getTime();
+  }
+  // solo fecha "YYYY-MM-DD"
+  const md=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if(md){
+    const d=new Date(+md[1],+md[2]-1,+md[3]);
+    return isNaN(d.getTime())?null:d.getTime();
+  }
+  // ultimo recurso: dejar que el navegador lo intente
+  const ms=Date.parse(s);
+  return isNaN(ms)?null:ms;
+}
 const CAMPOS_FECHA=["fecha","fecha_hora","fecha revision","fecha_revision","captura","fecha captura","timestamp","hora","hora_captura","ultima_captura"];
 // La hoja "comuna" es un historico: cada corrida del script agrega filas nuevas
 // para las mismas comunas. Aqui nos quedamos solo con el registro mas reciente
@@ -363,10 +387,8 @@ async function construyeData(){
 
   const serie=filasSerie.map(r=>{
     const t=String(buscaCampo(r,["t","captured_at","fecha","fecha_hora","timestamp"])||"").trim();
-    // "2026-07-16 12:08:00" -> ISO para que el eje de tiempo lo entienda bien
-    const iso=t.replace(" ","T");
-    const ms=Date.parse(iso);
-    return { t, ms:isNaN(ms)?null:ms, v:limpiaNum(buscaCampo(r,["v","valor","afectados","total_afectados"])) };
+    const ms=parseFecha(t);   // parser robusto (tolera horas sin cero a la izquierda)
+    return { t, ms, v:limpiaNum(buscaCampo(r,["v","valor","afectados","total_afectados"])) };
   }).filter(s=>s.t && s.ms!==null).sort((a,b)=>a.ms-b.ms);
 
   return {
@@ -492,7 +514,7 @@ function evo(horas){
   const UMBRAL_HUECO=Math.max(mediana*1.8, 90*60*1000);
 
   // HITO: linea vertical segmentada marcando el inicio del temporal (16-jul 15:00).
-  const HITO_MS=Date.parse("2026-07-16T15:00:00");
+  const HITO_MS=parseFecha("2026-07-16 15:00:00");
   const HITO_LABEL="Inicio Temporal";
   // Solo se dibuja si el hito cae dentro del rango visible (segun el filtro 24/48/72h).
   const hitoVisible = s.length && HITO_MS>=s[0].ms && HITO_MS<=s[s.length-1].ms;
