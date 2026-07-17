@@ -22,6 +22,20 @@
   .alerta{animation:pulso 1.4s infinite}
   ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#164e63;border-radius:3px}
 
+  /* Botones de redes sociales */
+  .social-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:34px;height:34px;border-radius:9px;
+    transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    flex:0 0 auto;
+  }
+  .social-btn svg{width:18px;height:18px}
+  .social-btn:hover{transform:translateY(-1px)}
+  .btn-ig{background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);color:#fff}
+  .btn-ig:hover{box-shadow:0 0 12px rgba(220,39,67,.8)}
+  .btn-tt{background:#010101;color:#fff;border:1px solid #25f4ee}
+  .btn-tt:hover{box-shadow:0 0 12px rgba(37,244,238,.7)}
+
   /* ---------- Responsivo: bottom sheet en movil (<768px) ---------- */
   /* KISS: mismo DOM en desktop y movil. Solo se reordena/reposiciona con
      Grid/Flexbox + Media Queries. El colapsado usa transform/opacity
@@ -69,8 +83,20 @@
     <div id="sheetHandle" onclick="toggleSheet()">
       <div class="handle-bar md:hidden"></div>
       <div>
-        <h1 class="text-cyan-300 text-lg font-medium">Monitor de Cortes de luz</h1>
-        <p class="text-slate-500 text-xs">SEC Chile - Aprende con Diland</p>
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h1 class="text-cyan-300 text-lg font-medium leading-tight">Monitor de Cortes de luz</h1>
+            <p class="text-slate-400 text-sm font-medium">@aprendecondiland</p>
+          </div>
+          <div class="flex items-center gap-2" onclick="event.stopPropagation()">
+            <a href="https://www.instagram.com/aprendecondiland/" target="_blank" rel="noopener noreferrer" class="social-btn btn-ig" title="Instagram" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 01-1.38-.9 3.7 3.7 0 01-.9-1.38c-.16-.42-.36-1.06-.41-2.23-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.44c-3.14 0-3.51.01-4.75.07-.9.04-1.39.19-1.71.32-.43.17-.74.37-1.06.69-.32.32-.52.63-.69 1.06-.13.32-.28.81-.32 1.71-.06 1.24-.07 1.61-.07 4.75s.01 3.51.07 4.75c.04.9.19 1.39.32 1.71.17.43.37.74.69 1.06.32.32.63.52 1.06.69.32.13.81.28 1.71.32 1.24.06 1.61.07 4.75.07s3.51-.01 4.75-.07c.9-.04 1.39-.19 1.71-.32.43-.17.74-.37 1.06-.69.32-.32.52-.63.69-1.06.13-.32.28-.81.32-1.71.06-1.24.07-1.61.07-4.75s-.01-3.51-.07-4.75c-.04-.9-.19-1.39-.32-1.71a2.85 2.85 0 00-.69-1.06 2.85 2.85 0 00-1.06-.69c-.32-.13-.81-.28-1.71-.32-1.24-.06-1.61-.07-4.75-.07zm0 2.45a5.95 5.95 0 110 11.9 5.95 5.95 0 010-11.9zm0 9.81a3.86 3.86 0 100-7.72 3.86 3.86 0 000 7.72zm7.58-10.05a1.39 1.39 0 11-2.78 0 1.39 1.39 0 012.78 0z"/></svg>
+            </a>
+            <a href="https://www.tiktok.com/@aprendecondiland" target="_blank" rel="noopener noreferrer" class="social-btn btn-tt" title="TikTok" aria-label="TikTok">
+              <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64c.3 0 .59.04.87.12V9.4a6.34 6.34 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1.04-.1z"/></svg>
+            </a>
+          </div>
+        </div>
         <div class="flex items-center gap-2 mt-2 bg-slate-950/60 border border-red-500/40 rounded-lg px-2 py-1.5">
           <span class="inline-block rounded-full bg-red-500 alerta" style="width:10px;height:10px"></span>
           <div class="text-xs leading-tight">
