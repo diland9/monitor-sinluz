@@ -323,7 +323,10 @@ function ultimaCapturaPorComuna(filas){
   return [...vistos.values()].map(v=>v.fila);
 }
 async function csv(url){
-  const res=await fetch(url,{cache:"no-store"});
+  // cache-busting: parametro unico por peticion para que Google Sheets nunca
+  // sirva una version cacheada del CSV.
+  const sep=url.includes("?")?"&":"?";
+  const res=await fetch(url+sep+"_cb="+Date.now(),{cache:"no-store"});
   if(!res.ok) throw new Error("No se pudo leer: "+url);
   const texto=await res.text();
   return new Promise((resolve,reject)=>{
@@ -513,43 +516,6 @@ function evo(horas){
   // Umbral: 1.8x la mediana, con un piso de 90 min para no marcar micro-variaciones.
   const UMBRAL_HUECO=Math.max(mediana*1.8, 90*60*1000);
 
-  // HITO: linea vertical segmentada marcando el inicio del temporal (16-jul 15:00).
-  const HITO_MS=parseFecha("2026-07-16 15:00:00");
-  const HITO_LABEL="Inicio Temporal";
-  // Solo se dibuja si el hito cae dentro del rango visible (segun el filtro 24/48/72h).
-  const hitoVisible = s.length && HITO_MS>=s[0].ms && HITO_MS<=s[s.length-1].ms;
-  const pluginHito={
-    id:"hitoTemporal",
-    afterDatasetsDraw(c){
-      if(!hitoVisible) return;
-      const x=c.scales.x.getPixelForValue(HITO_MS);
-      const top=c.chartArea.top, bot=c.chartArea.bottom;
-      const ctx=c.ctx;
-      ctx.save();
-      // linea vertical punteada
-      ctx.beginPath();
-      ctx.setLineDash([5,4]);
-      ctx.lineWidth=1.4;
-      ctx.strokeStyle="#f43f5e";           // rojo/rosado para contrastar con el cian
-      ctx.moveTo(x,top); ctx.lineTo(x,bot); ctx.stroke();
-      // etiqueta
-      ctx.setLineDash([]);
-      ctx.font="600 10px system-ui,sans-serif";
-      const tw=ctx.measureText(HITO_LABEL).width;
-      // por defecto a la derecha de la linea; si no cabe, a la izquierda
-      let lx=x+6, align="left";
-      if(lx+tw>c.chartArea.right){ lx=x-6; align="right"; }
-      ctx.textAlign=align;
-      // fondo semitransparente para legibilidad
-      const px=align==="left"?lx-3:lx-tw-3;
-      ctx.fillStyle="rgba(2,6,23,0.75)";
-      ctx.fillRect(px, top+2, tw+6, 14);
-      ctx.fillStyle="#fda4af";
-      ctx.fillText(HITO_LABEL, lx, top+12);
-      ctx.restore();
-    }
-  };
-
   if(chart)chart.destroy();
   chart=new Chart(document.getElementById("evo"),{
     type:"line",
@@ -616,8 +582,7 @@ function evo(horas){
           grid:{color:"#1e293b"}
         }
       }
-    },
-    plugins:[pluginHito]
+    }
   });
 }
 function filtros(){
