@@ -474,6 +474,60 @@ function evo(horas){
     const desde=finMs-horas*3600*1000;
     s=s.filter(d=>d.ms>=desde);
   }
+
+  // Deteccion de HUECOS: la serie no es uniforme (el scraper corre a intervalos
+  // irregulares). Calculamos la mediana de los intervalos y marcamos como "hueco"
+  // cualquier tramo que dure notablemente mas que lo habitual. Esos tramos se
+  // dibujan punteados y mas tenues, para no leer como tendencia real una recta
+  // que en realidad cruza un periodo sin datos.
+  const difs=[];
+  for(let i=1;i<s.length;i++) difs.push(s[i].ms-s[i-1].ms);
+  const mediana=(()=>{
+    if(!difs.length) return 0;
+    const d=difs.slice().sort((a,b)=>a-b);
+    const m=Math.floor(d.length/2);
+    return d.length%2 ? d[m] : (d[m-1]+d[m])/2;
+  })();
+  // Umbral: 1.8x la mediana, con un piso de 90 min para no marcar micro-variaciones.
+  const UMBRAL_HUECO=Math.max(mediana*1.8, 90*60*1000);
+
+  // HITO: linea vertical segmentada marcando el inicio del temporal (16-jul 15:00).
+  const HITO_MS=Date.parse("2026-07-16T15:00:00");
+  const HITO_LABEL="Inicio Temporal";
+  // Solo se dibuja si el hito cae dentro del rango visible (segun el filtro 24/48/72h).
+  const hitoVisible = s.length && HITO_MS>=s[0].ms && HITO_MS<=s[s.length-1].ms;
+  const pluginHito={
+    id:"hitoTemporal",
+    afterDatasetsDraw(c){
+      if(!hitoVisible) return;
+      const x=c.scales.x.getPixelForValue(HITO_MS);
+      const top=c.chartArea.top, bot=c.chartArea.bottom;
+      const ctx=c.ctx;
+      ctx.save();
+      // linea vertical punteada
+      ctx.beginPath();
+      ctx.setLineDash([5,4]);
+      ctx.lineWidth=1.4;
+      ctx.strokeStyle="#f43f5e";           // rojo/rosado para contrastar con el cian
+      ctx.moveTo(x,top); ctx.lineTo(x,bot); ctx.stroke();
+      // etiqueta
+      ctx.setLineDash([]);
+      ctx.font="600 10px system-ui,sans-serif";
+      const tw=ctx.measureText(HITO_LABEL).width;
+      // por defecto a la derecha de la linea; si no cabe, a la izquierda
+      let lx=x+6, align="left";
+      if(lx+tw>c.chartArea.right){ lx=x-6; align="right"; }
+      ctx.textAlign=align;
+      // fondo semitransparente para legibilidad
+      const px=align==="left"?lx-3:lx-tw-3;
+      ctx.fillStyle="rgba(2,6,23,0.75)";
+      ctx.fillRect(px, top+2, tw+6, 14);
+      ctx.fillStyle="#fda4af";
+      ctx.fillText(HITO_LABEL, lx, top+12);
+      ctx.restore();
+    }
+  };
+
   if(chart)chart.destroy();
   chart=new Chart(document.getElementById("evo"),{
     type:"line",
@@ -482,9 +536,27 @@ function evo(horas){
       borderColor:"#22d3ee",
       backgroundColor:"rgba(34,211,238,0.10)",
       fill:true,
-      pointRadius:0,
+      tension:0,           // linea recta entre puntos
       borderWidth:1.6,
-      tension:0            // linea recta entre puntos, igual que el Excel
+      // Puntos visibles solo al pasar el mouse; se marca el punto tras un hueco.
+      pointRadius:(ctx)=>{
+        const i=ctx.dataIndex;
+        if(i>0 && (s[i].ms-s[i-1].ms)>UMBRAL_HUECO) return 2.5; // inicio de dato tras hueco
+        return 0;
+      },
+      pointHoverRadius:4,
+      pointBackgroundColor:"#22d3ee",
+      // segment: estiliza CADA tramo entre dos puntos segun su duracion.
+      segment:{
+        borderColor:(ctx)=>{
+          const dt=ctx.p1.parsed.x-ctx.p0.parsed.x;
+          return dt>UMBRAL_HUECO ? "rgba(34,211,238,0.35)" : "#22d3ee"; // hueco = mas tenue
+        },
+        borderDash:(ctx)=>{
+          const dt=ctx.p1.parsed.x-ctx.p0.parsed.x;
+          return dt>UMBRAL_HUECO ? [5,4] : undefined; // hueco = punteado
+        }
+      }
     }]},
     options:{
       responsive:true,maintainAspectRatio:false,
@@ -497,7 +569,15 @@ function evo(horas){
         tooltip:{
           callbacks:{
             title:(items)=>items.length?luxon.DateTime.fromMillis(items[0].parsed.x).toFormat("dd-LL HH:mm"):"",
-            label:(item)=>miles(item.parsed.y)+" sin suministro"
+            label:(item)=>{
+              const i=item.dataIndex;
+              let txt=miles(item.parsed.y)+" sin suministro";
+              if(i>0 && (s[i].ms-s[i-1].ms)>UMBRAL_HUECO){
+                const h=((s[i].ms-s[i-1].ms)/3600000).toFixed(1);
+                txt+="  ·  sin registros previos ("+h+" h)";
+              }
+              return txt;
+            }
           }
         }
       },
@@ -514,7 +594,8 @@ function evo(horas){
           grid:{color:"#1e293b"}
         }
       }
-    }
+    },
+    plugins:[pluginHito]
   });
 }
 function filtros(){
